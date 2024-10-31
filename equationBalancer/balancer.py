@@ -1,5 +1,5 @@
 # import libraries
-import re # regular expresion library
+import re # regular expresion library (built-in)
 import numpy as np
 from sympy import Matrix, lcm
 
