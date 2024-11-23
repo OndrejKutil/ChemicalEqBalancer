@@ -10,6 +10,4 @@ Eg. 2:
 - Input: Cl2+H2->HCl
 - Output: Cl2 + H2 -> 2HCl
 
-
-
 Built by Ondřej Kutil

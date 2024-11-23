@@ -1,7 +1,7 @@
 # import libraries
 import re # regular expresion library (built-in)
-import numpy as np
-from sympy import Matrix, lcm
+import numpy as np # numpy for creating matrix
+from sympy import Matrix, lcm # Matrix for finding solution to the matrix, lcm for finding least common multiple if the solution is in fractions
 
 class EquationBalancer:
     def __init__(self):
@@ -17,7 +17,6 @@ class EquationBalancer:
             reactants = reactants.split('+')
             products = products.split('+')
 
-            # eg.: parseEquation("H2+O2->H2O") return (["H2", "O2"], ["H2O"])
             return reactants, products
         except Exception:
             raise Exception('Invalid input. Please enter a valid equation.')
@@ -56,12 +55,15 @@ class EquationBalancer:
         for molecule in reactants + products:
             # adds the atom to the set (.update())
             # parseMolecule(x) gives me the eg. dict: {"H": "2"} so the .keys() gives us only the keys - eg.: {"H": "2"} -> "H"
-            atoms.update(self.parseMolecule(molecule=molecule).keys())
+            atoms.update(self.parseMolecule(molecule).keys())
 
         # returns list instead of set (easier to work with)
         return sorted(atoms)
 
     def buildMatrix(self, reactants: list, products: list, atoms: list) -> list[list[int]]:
+        """
+        Builds matrix from given equation
+        """
         # gets how many atoms are present in given equation
         numAtoms = len(atoms)
         # how many molecules are in given equation
@@ -82,31 +84,41 @@ class EquationBalancer:
         return matrix
 
     def generateFinalSolutionString(self, reactants: list, products: list, solution: list) -> str:
-        #! ADD DOCSTRING
-        #! comment code
+        """
+        Generates final solution string from given equation and solution list
+        """
         solutionString = ''
+
         for i in range(len(reactants)):
             solutionString = solutionString + f'{solution[i]} {reactants[i]}' + ' + '
+
         solutionString = solutionString.rstrip(' + ')
         solutionString = solutionString + ' -> '
+
         for i in range(len(products)):
             solutionString = solutionString + f'{solution[i + len(reactants)]} {products[i]}' + ' + '
+
         solutionString = solutionString.rstrip(' + ')
             
         return solutionString
 
     def balanceEquation(self, equation: str) -> tuple:
-        #! ADD DOCSTRING
-        #! explain why there is try except block, it is there co catch an error from any function called inside the try block
+        """
+        Balances given chemical equation using previously defined functions
+
+        returns tuple with solution string and exit code, if exit code = 0, then the solution is correct, else it = 1, it is an error
+        """
+
+        # try/except is used to catch any errors that may occur
         try:
-            reactants, products = self.parseEquation(equation=equation)
+            reactants, products = self.parseEquation(equation)
             atoms = self.getAtoms(reactants, products)
             matrix = self.buildMatrix(reactants, products, atoms)
 
             # using sympy we can find the null space (= the solution)
             nullSpace = Matrix(matrix).nullspace()
             if not nullSpace:
-                return 'No solution'
+                return 'This equation has no solution', 1
             else:
                 solution = nullSpace[0]
 
@@ -119,7 +131,7 @@ class EquationBalancer:
 
             integerSolution = [number * lcmDenominator for number in solution]
 
-            #! explain the return statement, why is there the exit code 
+            # with solution or error returns an exit code, so that we know if the messge in the first element of the tuple is an error or not
             return self.generateFinalSolutionString(reactants, products, integerSolution), 0
         except Exception as e:
             return f'Error: {e}', 1
