@@ -19,7 +19,7 @@ class EquationBalancer:
 
             return reactants, products
         except Exception:
-            raise Exception('Invalid input. Please enter a valid equation.')
+            return [], []
 
     def parseMolecule(self, molecule: str) -> dict:
         """
