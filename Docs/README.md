@@ -1,6 +1,5 @@
 # ⚗️ Chemical Equation Balancer
-
-[![MIT License](https://img.shields.io/github/license/OndrejKutil/ChemicalEqBalancer?style=for-the-badge)](./LICENSE)  
+  
 A Python program that parses and balances unbalanced chemical reactions using matrix algebra. Built as a university project, it combines string parsing, regex, and linear algebra to automate a classic chemistry task.
 
 ---
